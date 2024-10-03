@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Что посмотреть?</title>
+		<link rel="icon" href="favicon.svg">
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/style.css">
+		<script src="js/script.js" defer></script>
+		<link href="https://fonts.googleapis.com/css?family=Rubik:regular,500,600,700,800,900" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="wrapper-loader dn">
+				<div class="loader"></div>
+			</div>
+			<div class="modal-container getting-started hidden">
+				<h1>Привет! Впервые?</h1>
+				<div class="modal-content">
+					<button class="button" id="haveAccountButton">Я уже тут был</button>
+					<button class="button" id="newAccountButton">Я новенький</button>
+				</div>
+			</div>
+			<div class="modal-container create-account hidden">
+				<h1>Как звать?</h1>
+				<div class="modal-content">
+					<input type="text" id="usernameInput">
+					<button class="button" id="createAccountGoToColors">Далее</button>
+				</div>
+			</div>
+			<div class="modal-container pick-color hidden">
+				<h1>Какой цвет?</h1>
+				<div class="error-message dn">Нужно выбрать цвет...</div>
+				<div class="modal-content">
+					<div class="color-item color-item-1" id="color1"></div>
+					<div class="color-item color-item-2" id="color2"></div>
+					<div class="color-item color-item-3" id="color3"></div>
+					<div class="color-item color-item-4" id="color4"></div>
+					<div class="color-item color-item-5" id="color5"></div>
+					<div class="color-item color-item-6" id="color6"></div>
+					<div class="color-item color-item-7" id="color7"></div>
+					<div class="color-item color-item-8" id="color8"></div>
+				</div>
+				<button class="button" id="createAccountReady">
+					<div class="loader dn"></div>
+					<span>Готово!</span>
+				</button>
+			</div>
+			<div class="modal-container pick-account hidden">
+				<h1 class="dn pick">И кто же ты?</h1>
+				<h1 class="dn new">Участников нет...</h1>
+				<div class="error-message dn">Тебе всё же надо выбрать...</div>
+				<div class="pick-account__loading">
+					<div class="loader"></div>
+					<span>Загружаю участников...</span>
+				</div>
+				<div class="modal-content nm dn pick">
+				</div>
+				<div class="modal-content nm dn new">
+					<button class="button" id="newAccountButton2">Стать участником</button>
+				</div>
+				<button class="button dn" id="pickAccountButton">Это я</button>
+			</div>
+			<div class="header-profile dn">
+				<button class="button" id="exit">Выйти</button>
+				<div class="header-profile__name">
+					<span class="hidden"></span>
+					<div class="color-item"></div>
+				</div>
+			</div>
+			<div class="content dn">
+				<button class="button" id="start">Выбрать</button>
+			</div>
+			<div class="modal-container choose-partner hidden">
+				<h1 class="have dn">С кем смотрим?</h1>
+				<h1 class="havent dn">Никого нет...</h1>
+				<div class="error-message dn">Стоит выбрать.</div>
+				<div class="pick-account__loading">
+					<div class="loader"></div>
+					<span>Загружаю участников...</span>
+				</div>
+				<button class="button dn havent" id="back">Назад</button>
+				<div class="modal-content have dn"></div>
+				<button class="button dn have" id="pickPartner">Выбрать</button>
+			</div>
+			<div class="modal-container whats-next hidden">
+				<h1>Что дальше?</h1>
+				<button class="button" id="addFilm">Добавить новый фильм</button>
+				<button class="button dn pick-film-button" id="pickFilm">Выбрать фильм</button>
+			</div>
+			<div class="modal-container add-film hidden">
+				<h1>Что за фильм?</h1>
+				<div class="modal-content">
+					<input type="text" id="filmName">
+					<button class="button" id="addFilmAdd">
+						<div class="loader dn"></div>
+						<span>Добавить</span>
+					</button>
+					<button class="button" id="addFilmBack">Назад</button>
+					<div class="films"></div>
+				</div>
+			</div>
+			<div class="modal-container pick-film hidden">
+				<h1>Из чего выбираем</h1>
+				<div class="description">Полный список совместных фильмов. Уже просмотренные фильмы в учёт не идут...</div>
+				<div class="modal-content">
+					<div class="pick-account__loading">
+						<div class="loader"></div>
+						<span>Загружаю фильмы...</span>
+					</div>
+				</div>
+				<button class="button" id="generate">Выбираем!</button>
+			</div>
+		</div>
+		<div class="result hidden">
+			<div class="result__body">
+				<div class="result__placeholder result__placeholder-1">?</div>
+				<div class="result__placeholder result__placeholder-2">?</div>
+				<div class="result__placeholder result__placeholder-3">?</div>
+				<div class="result__container hidden"></div>
+				<button class="button hidden" id="bbb">На главную</button>
+			</div>
+		</div>
+	</body>
+</html>
