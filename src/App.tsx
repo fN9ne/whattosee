@@ -18,6 +18,10 @@ import { useLazyReadQuery } from "./services/api";
 import AppLayout from "./layouts/AppLayout";
 import Header from "./components/Header";
 import Profile from "./pages/Profile";
+import Test from "./test/Test";
+import PickPartner from "./pages/PickPartner";
+import Lobby from "./pages/Lobby";
+import PickLayout from "./layouts/PickLayout";
 
 const Wrapper = styled(Flex)`
 	background-color: var(--black);
@@ -45,7 +49,7 @@ const App: FC = () => {
 	}, [userId]);
 
 	return (
-		<Wrapper column gap={20}>
+		<Wrapper column>
 			<Header />
 			<AP mode="wait" initial={false}>
 				<Routes location={location} key={location.pathname}>
@@ -60,8 +64,13 @@ const App: FC = () => {
 						<Route element={<AppLayout />}>
 							<Route path={AppRoutes.Home} element={<Home />} />
 							<Route path={AppRoutes.Profile} element={<Profile />} />
+							<Route path={AppRoutes.PickPartner} element={<PickPartner />} />
+							<Route element={<PickLayout />}>
+								<Route path={AppRoutes.Lobby} element={<Lobby />} />
+							</Route>
 						</Route>
 						<Route path="*" element={<Navigate to={AppRoutes.GettingStarted} />} />
+						<Route path="test" element={<Test />} />
 					</Route>
 				</Routes>
 			</AP>

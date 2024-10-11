@@ -4,6 +4,17 @@ export interface IUser {
 	id: number;
 	name: string;
 	color: number;
+	latest: IUserLatest;
+}
+
+interface IUserLatest {
+	duets: number[];
+	films: IUserLatestFilm[];
+}
+
+export interface IUserLatestFilm {
+	owner: number;
+	filmId: number;
 }
 
 interface IFilm {

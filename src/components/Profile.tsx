@@ -62,12 +62,14 @@ const Profile: FC = () => {
 
 	return user ? (
 		<StyledProfile>
-			<Avatar
-				square={isDropDownActive}
-				onClick={() => setIsDropDownActive((state) => !state)}
-				symbol={user.name.charAt(0)}
-				colorId={user.color || 1}
-			/>
+			<AvatarWrapper>
+				<Avatar
+					square={isDropDownActive}
+					onClick={() => setIsDropDownActive((state) => !state)}
+					symbol={user.name.charAt(0)}
+					colorId={user.color || 1}
+				/>
+			</AvatarWrapper>
 			<AP mode="wait" initial={false}>
 				{isDropDownActive && (
 					<m.div {...transitions}>
@@ -79,7 +81,10 @@ const Profile: FC = () => {
 										style={item.style || "normal"}
 										gap={8}
 										alignItems="center"
-										onClick={() => (item.onClick ? item.onClick() : item.to ? navigate(item.to) : null)}
+										onClick={() => {
+											setIsDropDownActive(false);
+											item.onClick ? item.onClick() : item.to ? navigate(item.to) : null;
+										}}
 										key={index}
 									>
 										{React.createElement(item.icon)}
@@ -109,6 +114,7 @@ const DropdownBody = styled(m.div)`
 	border-radius: 12px;
 	padding: 8px 4px;
 	position: absolute;
+	z-index: 8;
 	top: 100%;
 	right: 0;
 	translate: 0 4px;
@@ -187,11 +193,25 @@ const DropdownItem = styled(Flex).attrs({ as: "button" }).withConfig({ shouldFor
 
 const DarkArea = styled.div`
 	position: fixed;
+	z-index: 7;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	background-color: rgba(16, 19, 18, 0.8);
+`;
+
+const AvatarWrapper = styled.button`
+	cursor: pointer;
+	transition: 200ms;
+	position: relative;
+	z-index: 9;
+
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			opacity: 0.75;
+		}
+	}
 `;
 
 const StyledProfile = styled.div`

@@ -14,8 +14,11 @@ import { useActions } from "@/hooks/useActions";
 import { AppRoutes } from "@/types";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/UI/Loader";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const CreateAccount: FC = () => {
+	useDocumentTitle("Создание аккаунта");
+
 	const name = useInput("", {});
 
 	const { setUser, setUserId, setData } = useActions();
@@ -29,31 +32,34 @@ const CreateAccount: FC = () => {
 
 	const [pickedAvatarId, setPickedAvatarId] = useState<number | null>(null);
 
-	const handleCreateAccount = () => {
-		triggerRead()
-			.unwrap()
-			.then((response) => {
-				const newUserId = response.users[response.users.length - 1].id + 1;
+	const handleCreateAccount = async () => {
+		try {
+			const response = await triggerRead().unwrap();
 
-				const newUser: IUser = {
-					id: newUserId,
-					name: name.value.charAt(0).toUpperCase() + name.value.slice(1),
-					color: pickedAvatarId || 1,
-				};
+			const newUserId = response.users[response.users.length - 1].id + 1;
+			const newUser: IUser = {
+				id: newUserId,
+				name: name.value.charAt(0).toUpperCase() + name.value.slice(1),
+				color: pickedAvatarId || 0,
+				latest: {
+					duets: [],
+					films: [],
+				},
+			};
 
-				const newUsers = [...response.users, newUser];
-				const newData = { ...response, users: newUsers };
+			const newUsers = [...response.users, newUser];
+			const newData = { ...response, users: newUsers };
 
-				updateData(newData)
-					.unwrap()
-					.then((response) => {
-						localStorage.setItem("userId", JSON.stringify(newUserId));
-						setUser(newUser);
-						setUserId(newUserId);
-						setData(response);
-						navigate(AppRoutes.Home);
-					});
-			});
+			const updatedResponse = await updateData(newData).unwrap();
+
+			localStorage.setItem("userId", JSON.stringify(newUserId));
+			setUser(newUser);
+			setUserId(newUserId);
+			setData(updatedResponse);
+			navigate(AppRoutes.Home);
+		} catch (error) {
+			console.error("Ошибка при создании аккаунта:", error);
+		}
 	};
 
 	return (

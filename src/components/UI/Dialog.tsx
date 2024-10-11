@@ -69,9 +69,11 @@ const DialogWrapper = styled(Flex)`
 
 const StyledDialog = styled(Flex)`
 	width: inherit;
+	min-height: 300px;
 	background-color: var(--gray);
 	padding: 32px;
 	border-radius: 32px;
 	position: relative;
+	z-index: 0;
 	overflow: hidden;
 `;

@@ -13,10 +13,13 @@ import styled, { css } from "styled-components";
 import Avatar from "@/components/UI/Avatar";
 import { useActions } from "@/hooks/useActions";
 import { AppRoutes } from "@/types";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 /* main */
 
 const Login: FC = () => {
+	useDocumentTitle("Вход");
+
 	const { users } = useAppSelector((state) => state.data);
 
 	const { setUser } = useActions();

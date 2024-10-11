@@ -10,6 +10,7 @@ const StyledLayout = styled(m.div)`
 	align-items: center;
 	flex-direction: column;
 	justify-content: center;
+	position: relative;
 	gap: 20px;
 `;
 

@@ -46,7 +46,9 @@ const StyledHeader = styled(Flex).attrs({ as: "header" })`
 	background-color: var(--gray);
 	border-radius: 12px;
 	padding: 16px 20px;
-	margin: 20px 20px 0 20px;
+	margin: 20px 15px 0 15px;
+	position: relative;
+	z-index: 1;
 
 	> a > svg {
 		width: 50px;

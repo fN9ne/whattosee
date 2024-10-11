@@ -5,4 +5,10 @@ export enum AppRoutes {
 	CreateAccount = "/create-account",
 	Home = "/home",
 	Profile = "/profile",
+	PickPartner = "/pick-partner",
+	Lobby = "/lobby",
+	FilmList = "/film-list",
+	AddFilm = "/film-add",
+	PickFilm = "/film-pick",
+	Result = "/result",
 }

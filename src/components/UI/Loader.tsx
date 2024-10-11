@@ -42,6 +42,7 @@ const Container = styled(m.div).withConfig({ shouldForwardProp })<ContainerProps
 	${(props) =>
 		props.absolute &&
 		css`
+			z-index: 10;
 			position: absolute;
 			top: 0;
 			left: 0;

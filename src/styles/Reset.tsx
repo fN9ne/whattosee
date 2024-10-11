@@ -31,6 +31,7 @@ const ResetStyles = createGlobalStyle`
 
 	button {
 		cursor: pointer;
+		background-color: transparent;
 	}
 
 	button, input, textarea, select {

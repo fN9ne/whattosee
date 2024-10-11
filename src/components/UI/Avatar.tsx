@@ -79,13 +79,27 @@ const StyledAvatar = styled(Flex).withConfig({ shouldForwardProp })<StyledAvatar
 
 	${(props) =>
 		props.picked !== undefined &&
-		(props.picked
-			? css`
-					opacity: 1;
-			  `
-			: css`
-					opacity: 0.25;
-			  `)}
+		css`
+			cursor: pointer;
+
+			${props.picked
+				? css`
+						opacity: 1;
+				  `
+				: css`
+						opacity: 0.25;
+
+						@media (hover: hover) and (pointer: fine) {
+							&:hover {
+								opacity: 0.5;
+							}
+						}
+
+						&:active {
+							opacity: 0.75;
+						}
+				  `}
+		`}
 	${(props) => (props.responsive ? "font-size: 24px" : avatarSizes[props.size || ("normal" as keyof typeof avatarSizes)])};
 	background-color: ${(props) => avatarColors[`${props.colorId}` as keyof typeof avatarColors]};
 `;
