@@ -7,7 +7,7 @@ export interface IUser {
 	latest: IUserLatest;
 }
 
-interface IUserLatest {
+export interface IUserLatest {
 	duets: number[];
 	films: IUserLatestFilm[];
 }
@@ -17,17 +17,18 @@ export interface IUserLatestFilm {
 	filmId: number;
 }
 
-interface IFilm {
+export interface IFilm {
 	id: number;
 	name: string;
+	owner: number;
 }
 
-interface IDuetFilm {
+export interface IDuetFilm {
 	filmId: number;
 	owner: number;
 }
 
-interface IDuet {
+export interface IDuet {
 	id: number;
 	firstUser: number;
 	secondUser: number;
@@ -39,6 +40,14 @@ export interface IFetchData {
 	users: IUser[];
 	items: IFilm[];
 	duets: IDuet[];
+}
+
+export interface IFetchDataUpdate {
+	record: IFetchData;
+	metadata: {
+		parentId: string;
+		private: boolean;
+	};
 }
 
 export const api = createApi({
@@ -59,9 +68,9 @@ export const api = createApi({
 				method: "GET",
 			}),
 		}),
-		update: builder.mutation<IFetchData, IFetchData>({
+		update: builder.mutation<IFetchDataUpdate, IFetchData>({
 			query: (data) => ({
-				url: "/",
+				url: "?meta=false",
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",

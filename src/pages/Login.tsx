@@ -116,7 +116,15 @@ const Track = styled(Flex)`
 	width: 100%;
 	overflow: auto;
 	max-height: 300px;
-	padding: 0 12px 0 0;
+	padding: 0 8px 0 0;
+	&::-webkit-scrollbar {
+		width: 4px;
+
+		&-thumb {
+			background-color: #575757;
+			border-radius: 2px;
+		}
+	}
 `;
 
 interface UserItemProps {

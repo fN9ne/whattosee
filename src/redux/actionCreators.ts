@@ -1,3 +1,4 @@
+import alertSlice from "./slices/alert";
 import dataSlice from "./slices/data";
 import globalSlice from "./slices/global";
 import modalSlice from "./slices/modal";
@@ -10,4 +11,5 @@ export default {
 	...userSlice.actions,
 	...storageSlice.actions,
 	...globalSlice.actions,
+	...alertSlice.actions,
 };

@@ -16,9 +16,13 @@ const dataSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
-		builder.addMatcher(api.endpoints.read.matchFulfilled, (_, { payload }) => {
-			return payload;
-		});
+		builder
+			.addMatcher(api.endpoints.read.matchFulfilled, (_, { payload }) => {
+				return payload;
+			})
+			.addMatcher(api.endpoints.update.matchFulfilled, (_, { payload }) => {
+				return payload.record;
+			});
 	},
 });
 

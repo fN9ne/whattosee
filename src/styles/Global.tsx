@@ -24,6 +24,10 @@ const GlobalStyles = createGlobalStyle`
 		--error-dark: #c42626;
 		--error-darker: #a92121;
 	}
+
+	.wrapper {
+		background-color: #101010;
+	}
 `;
 
 export default GlobalStyles;

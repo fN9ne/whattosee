@@ -21,7 +21,7 @@ const CreateAccount: FC = () => {
 
 	const name = useInput("", {});
 
-	const { setUser, setUserId, setData } = useActions();
+	const { setUser, setUserId } = useActions();
 
 	const navigate = useNavigate();
 
@@ -50,12 +50,11 @@ const CreateAccount: FC = () => {
 			const newUsers = [...response.users, newUser];
 			const newData = { ...response, users: newUsers };
 
-			const updatedResponse = await updateData(newData).unwrap();
+			await updateData(newData).unwrap();
 
 			localStorage.setItem("userId", JSON.stringify(newUserId));
 			setUser(newUser);
 			setUserId(newUserId);
-			setData(updatedResponse);
 			navigate(AppRoutes.Home);
 		} catch (error) {
 			console.error("Ошибка при создании аккаунта:", error);

@@ -10,19 +10,7 @@ const Test: FC = () => {
 		try {
 			const response = await triggerRead().unwrap();
 
-			const newUsers = response.users.map((user) =>
-				user.id === 1
-					? {
-							...user,
-							latest: {
-								films: [],
-								duets: [],
-							},
-					  }
-					: user
-			);
-
-			await updateData({ ...response, users: newUsers });
+			await updateData({ ...response, items: [], duets: [] });
 		} catch (error) {
 			console.error(error);
 		}

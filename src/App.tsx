@@ -22,9 +22,16 @@ import Test from "./test/Test";
 import PickPartner from "./pages/PickPartner";
 import Lobby from "./pages/Lobby";
 import PickLayout from "./layouts/PickLayout";
+import AddFilm from "./pages/AddFilm";
+import FilmList from "./pages/FilmList";
+import PickFilm from "./pages/PickFilm";
+import Alert from "./components/UI/Alert";
 
 const Wrapper = styled(Flex)`
 	background-color: var(--black);
+	max-width: 375px;
+	margin: 0 auto;
+	width: 100%;
 	min-height: 100vh;
 `;
 
@@ -67,6 +74,9 @@ const App: FC = () => {
 							<Route path={AppRoutes.PickPartner} element={<PickPartner />} />
 							<Route element={<PickLayout />}>
 								<Route path={AppRoutes.Lobby} element={<Lobby />} />
+								<Route path={AppRoutes.AddFilm} element={<AddFilm />} />
+								<Route path={AppRoutes.FilmList} element={<FilmList />} />
+								<Route path={AppRoutes.PickFilm} element={<PickFilm />} />
 							</Route>
 						</Route>
 						<Route path="*" element={<Navigate to={AppRoutes.GettingStarted} />} />
@@ -74,6 +84,7 @@ const App: FC = () => {
 					</Route>
 				</Routes>
 			</AP>
+			<Alert />
 		</Wrapper>
 	);
 };

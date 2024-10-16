@@ -6,6 +6,7 @@ import dataSlice from "./slices/data";
 import userSlice from "./slices/user";
 import storageSlice from "./slices/storage";
 import globalSlice from "./slices/global";
+import alertSlice from "./slices/alert";
 
 const rootReducer = combineReducers({
 	modal: modalSlice.reducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
 	user: userSlice.reducer,
 	storage: storageSlice.reducer,
 	global: globalSlice.reducer,
+	alert: alertSlice.reducer,
 	[api.reducerPath]: api.reducer,
 });
 
