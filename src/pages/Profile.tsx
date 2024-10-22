@@ -44,7 +44,7 @@ const Profile: FC = () => {
 		setIsFetching(readLoading || updateLoading);
 	}, [readLoading, updateLoading]);
 
-	const { setData, setUser } = useActions();
+	const { setUser } = useActions();
 
 	const isDataChanged = (): boolean => {
 		if (initialUserData) {
@@ -71,10 +71,9 @@ const Profile: FC = () => {
 				const newUsers = response.users.map((userItem) => (userItem.id === user.id ? newUserData : userItem));
 				const newData = { ...response, users: newUsers };
 
-				const updatedResponse = await updateData(newData).unwrap();
+				await updateData(newData).unwrap();
 
 				setUser(newUserData);
-				setData(updatedResponse);
 			} catch (error) {
 				console.error("Ошибка при сохраненнии данных профиля:", error);
 			}

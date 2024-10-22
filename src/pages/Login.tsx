@@ -14,6 +14,7 @@ import Avatar from "@/components/UI/Avatar";
 import { useActions } from "@/hooks/useActions";
 import { AppRoutes } from "@/types";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import Track from "@/components/Track";
 
 /* main */
 
@@ -110,13 +111,6 @@ export default Login;
 
 const Content = styled(Flex)`
 	width: 100%;
-`;
-
-const Track = styled(Flex)`
-	width: 100%;
-	overflow: auto;
-	max-height: 300px;
-	padding: 0 12px 0 0;
 `;
 
 interface UserItemProps {

@@ -17,7 +17,6 @@ const PickedPartner: FC<PickedPartnerProps> = ({ userId }) => {
 
 	useEffect(() => {
 		setUser(users.find((user) => user.id === userId) || null);
-		console.log(users.find((user) => user.id === userId) || null);
 	}, [userId, users]);
 
 	return (

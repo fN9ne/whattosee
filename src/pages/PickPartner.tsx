@@ -1,4 +1,5 @@
 import Flex from "@/components/Flex";
+import Track from "@/components/Track";
 import Avatar from "@/components/UI/Avatar";
 import Dialog from "@/components/UI/Dialog";
 import Loader from "@/components/UI/Loader";
@@ -16,6 +17,7 @@ const PickPartner: FC = () => {
 
 	const [triggerRead, { isLoading }] = useLazyReadQuery();
 	const { setPickedPartner } = useActions();
+	const { user } = useAppSelector((state) => state.user);
 	const { users } = useAppSelector((state) => state.data);
 	const navigate = useNavigate();
 
@@ -34,12 +36,14 @@ const PickPartner: FC = () => {
 		<Dialog showBackLink title="Выбор дуэта" description="Выберите того с кем хотите что-то посмотреть.">
 			<Loader isLoading={isLoading} dark absolute />
 			<Track column gap={4}>
-				{users.map((user, index) => (
-					<User onClick={() => handlePickPartner(user.id)} gap={16} alignItems="center" key={index}>
-						<Avatar colorId={user.color} symbol={user.name.charAt(0)} />
-						<span>{user.name}</span>
-					</User>
-				))}
+				{users
+					.filter((userItem) => userItem.id !== user?.id)
+					.map((user, index) => (
+						<User onClick={() => handlePickPartner(user.id)} gap={16} alignItems="center" key={index}>
+							<Avatar size="large" colorId={user.color} symbol={user.name.charAt(0)} />
+							<span>{user.name}</span>
+						</User>
+					))}
 			</Track>
 		</Dialog>
 	);
@@ -53,11 +57,11 @@ const User = styled(Flex)`
 	background-color: var(--black);
 	border-radius: 40px;
 	padding: 8px 24px 8px 8px;
-	border: 2px solid transparent;
 	transition: 200ms;
 	font-weight: 700;
 	font-size: 20px;
 	color: white;
+	cursor: pointer;
 
 	span {
 		white-space: nowrap;
@@ -65,13 +69,13 @@ const User = styled(Flex)`
 		overflow: hidden;
 	}
 
-	&:active {
-		border-color: var(--primary);
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			opacity: 0.6;
+		}
 	}
-`;
 
-const Track = styled(Flex)`
-	max-height: 400px;
-	overflow: auto;
-	padding: 0 12px 0 0;
+	&:active {
+		opacity: 0.35;
+	}
 `;

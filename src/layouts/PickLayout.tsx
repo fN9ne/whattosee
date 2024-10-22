@@ -8,7 +8,7 @@ const PickLayout: FC = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (!pickedPartner) {
+		if (pickedPartner === null) {
 			navigate(AppRoutes.Home);
 		}
 	}, [pickedPartner]);
