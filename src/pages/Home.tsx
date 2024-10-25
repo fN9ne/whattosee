@@ -12,6 +12,8 @@ import { IUserLatestFilm } from "@/services/api";
 import Button from "@/components/UI/Button";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { AppRoutes } from "@/types";
+import { useActions } from "@/hooks/useActions";
+import { useNavigate } from "react-router-dom";
 
 const Home: FC = () => {
 	useDocumentTitle("Главная");
@@ -68,12 +70,20 @@ interface UserItemProps {
 
 const UserItem: FC<UserItemProps> = ({ userId }) => {
 	const { users } = useAppSelector((state) => state.data);
+	const { setPickedPartner } = useActions();
 
 	const user = users.find((user) => user.id === userId);
 
+	const navigate = useNavigate();
+
+	const handlePickPartner = () => {
+		setPickedPartner(userId);
+		navigate(AppRoutes.Lobby);
+	};
+
 	return (
 		user && (
-			<StyledUserItem gap={12} alignItems="center">
+			<StyledUserItem onClick={handlePickPartner} gap={12} alignItems="center">
 				<Avatar colorId={user.color} symbol={user.name.charAt(0)} />
 				<span>{user.name}</span>
 			</StyledUserItem>

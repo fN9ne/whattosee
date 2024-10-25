@@ -18,7 +18,6 @@ import { useLazyReadQuery } from "./services/api";
 import AppLayout from "./layouts/AppLayout";
 import Header from "./components/Header";
 import Profile from "./pages/Profile";
-import Test from "./test/Test";
 import PickPartner from "./pages/PickPartner";
 import Lobby from "./pages/Lobby";
 import PickLayout from "./layouts/PickLayout";
@@ -26,6 +25,7 @@ import AddFilm from "./pages/AddFilm";
 import FilmList from "./pages/FilmList";
 import PickFilm from "./pages/PickFilm";
 import Alert from "./components/UI/Alert";
+import Result from "./pages/Result";
 
 const Wrapper = styled(Flex)`
 	background-color: var(--black);
@@ -77,10 +77,10 @@ const App: FC = () => {
 								<Route path={AppRoutes.AddFilm} element={<AddFilm />} />
 								<Route path={AppRoutes.FilmList} element={<FilmList />} />
 								<Route path={AppRoutes.PickFilm} element={<PickFilm />} />
+								<Route path={AppRoutes.Result} element={<Result />} />
 							</Route>
 						</Route>
 						<Route path="*" element={<Navigate to={AppRoutes.GettingStarted} />} />
-						<Route path="test" element={<Test />} />
 					</Route>
 				</Routes>
 			</AP>

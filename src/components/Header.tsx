@@ -48,7 +48,7 @@ const StyledHeader = styled(Flex).attrs({ as: "header" })`
 	padding: 16px 20px;
 	margin: 20px 15px 0 15px;
 	position: relative;
-	z-index: 1;
+	z-index: 3;
 
 	> a > svg {
 		width: 50px;

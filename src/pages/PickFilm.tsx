@@ -77,7 +77,11 @@ const PickFilm: FC = () => {
 			);
 
 			if (currentDuet) {
-				const newItems = items.filter((item) => !currentDuet.items.map((duetItem) => duetItem.filmId).includes(item.id));
+				const newItems = items.filter(
+					(item) =>
+						!currentDuet.items.map((duetItem) => duetItem.filmId).includes(item.id) &&
+						!currentDuet.watched.map((duetItem) => duetItem.filmId).includes(item.id)
+				);
 
 				setFilmList(newItems);
 			}
@@ -111,7 +115,7 @@ const PickFilm: FC = () => {
 				)}
 			</Flex>
 			{filmList.length > 0 && (
-				<Button icon={AddIcon} onClick={handleAddPickedFilms}>
+				<Button disabled={pickedFilms.length === 0} icon={AddIcon} onClick={handleAddPickedFilms}>
 					Добавить
 				</Button>
 			)}

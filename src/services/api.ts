@@ -33,7 +33,7 @@ export interface IDuet {
 	firstUser: number;
 	secondUser: number;
 	items: IDuetFilm[];
-	watched: number[];
+	watched: IDuetFilm[];
 }
 
 export interface IFetchData {

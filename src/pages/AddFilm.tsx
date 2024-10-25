@@ -36,7 +36,7 @@ const AddFilm: FC = () => {
 
 			const response = await triggerRead().unwrap();
 
-			const oldFilm = response.items.find((film) => film.name === filmName.value);
+			const oldFilm = response.items.find((film) => film.name.toLowerCase() === filmName.value.toLowerCase());
 			const isFilmUnique = !Boolean(oldFilm);
 			const newItemId = isFilmUnique
 				? response.items.length > 0
@@ -51,6 +51,22 @@ const AddFilm: FC = () => {
 					(duet.firstUser === user.id && duet.secondUser === pickedPartner) ||
 					(duet.firstUser === pickedPartner && duet.secondUser === user.id)
 			);
+
+			if (currentDuet) {
+				const desiredFilm = response.items.find((item) => item.name.toLowerCase() === filmName.value.toLowerCase());
+
+				if (desiredFilm) {
+					const desiredDuetFilm =
+						currentDuet.watched.find((film) => film.filmId === desiredFilm.id) ||
+						currentDuet.items.find((film) => film.filmId === desiredFilm.id);
+
+					if (desiredDuetFilm) {
+						setIsFetching(false);
+						triggerAlert(`"${desiredFilm.name}" уже в вашем списке.`, "error");
+						return;
+					}
+				}
+			}
 
 			const newDuetId = response.duets.length > 0 ? response.duets[response.duets.length - 1].id + 1 : 0;
 

@@ -118,11 +118,10 @@ const Track = styled(Flex)`
 	max-height: 300px;
 	padding: 0 8px 0 0;
 	&::-webkit-scrollbar {
-		width: 4px;
+		width: 5px;
 
 		&-thumb {
-			background-color: #575757;
-			border-radius: 2px;
+			background-color: #777;
 		}
 	}
 `;
