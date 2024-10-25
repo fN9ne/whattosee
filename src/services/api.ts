@@ -42,6 +42,14 @@ export interface IFetchData {
 	duets: IDuet[];
 }
 
+export interface IFetchAllData {
+	record: IFetchData;
+	metadata: {
+		parentId: string;
+		private: boolean;
+	};
+}
+
 export interface IFetchDataUpdate {
 	record: IFetchData;
 	metadata: {

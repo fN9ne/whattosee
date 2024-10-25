@@ -14,6 +14,7 @@ import Avatar from "@/components/UI/Avatar";
 import { useActions } from "@/hooks/useActions";
 import { AppRoutes } from "@/types";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import Track from "@/components/Track";
 
 /* main */
 
@@ -112,6 +113,7 @@ const Content = styled(Flex)`
 	width: 100%;
 `;
 
+<<<<<<< HEAD
 const Track = styled(Flex)`
 	width: 100%;
 	overflow: auto;
@@ -126,6 +128,8 @@ const Track = styled(Flex)`
 	}
 `;
 
+=======
+>>>>>>> 32e4c30de3286aba2783714501254ebce3af7426
 interface UserItemProps {
 	picked: boolean;
 }

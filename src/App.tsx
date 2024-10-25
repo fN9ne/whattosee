@@ -29,9 +29,6 @@ import Result from "./pages/Result";
 
 const Wrapper = styled(Flex)`
 	background-color: var(--black);
-	max-width: 375px;
-	margin: 0 auto;
-	width: 100%;
 	min-height: 100vh;
 `;
 
@@ -74,10 +71,6 @@ const App: FC = () => {
 							<Route path={AppRoutes.PickPartner} element={<PickPartner />} />
 							<Route element={<PickLayout />}>
 								<Route path={AppRoutes.Lobby} element={<Lobby />} />
-								<Route path={AppRoutes.AddFilm} element={<AddFilm />} />
-								<Route path={AppRoutes.FilmList} element={<FilmList />} />
-								<Route path={AppRoutes.PickFilm} element={<PickFilm />} />
-								<Route path={AppRoutes.Result} element={<Result />} />
 							</Route>
 						</Route>
 						<Route path="*" element={<Navigate to={AppRoutes.GettingStarted} />} />

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Flex from "@/components/Flex";
 import PickedPartner from "@/components/PickedPartner";
 import Dialog from "@/components/UI/Dialog";
@@ -246,11 +247,25 @@ const FilmList: FC = () => {
 					Выбрать фильм
 				</Button>
 			</Flex>
+=======
+import PickedPartner from "@/components/PickedPartner";
+import Dialog from "@/components/UI/Dialog";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { FC } from "react";
+
+const FilmList: FC = () => {
+	const { pickedPartner } = useAppSelector((state) => state.global);
+
+	return (
+		<Dialog showBackLink title="Ваш список фильмов">
+			<PickedPartner userId={pickedPartner} />
+>>>>>>> 32e4c30de3286aba2783714501254ebce3af7426
 		</Dialog>
 	);
 };
 
 export default FilmList;
+<<<<<<< HEAD
 
 /* components */
 
@@ -362,3 +377,5 @@ const StyledItem = styled(Flex)`
 		text-overflow: ellipsis;
 	}
 `;
+=======
+>>>>>>> 32e4c30de3286aba2783714501254ebce3af7426

@@ -1,4 +1,5 @@
 import Flex from "@/components/Flex";
+import Track from "@/components/Track";
 import Avatar from "@/components/UI/Avatar";
 import Dialog from "@/components/UI/Dialog";
 import Loader from "@/components/UI/Loader";
@@ -17,8 +18,13 @@ const PickPartner: FC = () => {
 	const [triggerRead, { isLoading: readLoading }] = useLazyReadQuery();
 	const [updateData, { isLoading: updateLoading }] = useUpdateMutation();
 	const { setPickedPartner } = useActions();
+<<<<<<< HEAD
 	const { users, duets } = useAppSelector((state) => state.data);
 	const { user } = useAppSelector((state) => state.user);
+=======
+	const { user } = useAppSelector((state) => state.user);
+	const { users } = useAppSelector((state) => state.data);
+>>>>>>> 32e4c30de3286aba2783714501254ebce3af7426
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -69,7 +75,11 @@ const PickPartner: FC = () => {
 					.filter((userItem) => userItem.id !== user?.id)
 					.map((user, index) => (
 						<User onClick={() => handlePickPartner(user.id)} gap={16} alignItems="center" key={index}>
+<<<<<<< HEAD
 							<Avatar colorId={user.color} symbol={user.name.charAt(0)} />
+=======
+							<Avatar size="large" colorId={user.color} symbol={user.name.charAt(0)} />
+>>>>>>> 32e4c30de3286aba2783714501254ebce3af7426
 							<span>{user.name}</span>
 						</User>
 					))}
@@ -86,18 +96,20 @@ const User = styled(Flex)`
 	background-color: var(--black);
 	border-radius: 40px;
 	padding: 8px 24px 8px 8px;
-	border: 2px solid transparent;
 	transition: 200ms;
 	font-weight: 700;
 	font-size: 20px;
 	color: white;
 	cursor: pointer;
+<<<<<<< HEAD
 
 	@media (hover: hover) and (pointer: fine) {
 		&:hover {
 			opacity: 0.5;
 		}
 	}
+=======
+>>>>>>> 32e4c30de3286aba2783714501254ebce3af7426
 
 	span {
 		white-space: nowrap;
@@ -105,14 +117,18 @@ const User = styled(Flex)`
 		overflow: hidden;
 	}
 
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			opacity: 0.6;
+		}
+	}
+
 	&:active {
+<<<<<<< HEAD
 		border-color: var(--primary);
 		opacity: 1;
+=======
+		opacity: 0.35;
+>>>>>>> 32e4c30de3286aba2783714501254ebce3af7426
 	}
-`;
-
-const Track = styled(Flex)`
-	max-height: 400px;
-	overflow: auto;
-	padding: 0 12px 0 0;
 `;
