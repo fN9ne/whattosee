@@ -36,7 +36,7 @@ const Item: FC<IFilm> = ({ name, owner }) => {
 
 	return (
 		user && (
-			<StyledItem alignItems="center" gap={20}>
+			<StyledItem justifyContent="space-between" alignItems="center" gap={20}>
 				<span>{name}</span>
 				<Avatar colorId={user.color} symbol={user.name.charAt(0)} />
 			</StyledItem>

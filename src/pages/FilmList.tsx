@@ -5,19 +5,21 @@ import Tab from "@/components/UI/Tab";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { IDuet, IDuetFilm, IFilm, IUser, useLazyReadQuery, useUpdateMutation } from "@/services/api";
-import { FC, useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import { FC, useEffect, useRef, useState } from "react";
+import styled, { css, keyframes } from "styled-components";
 
 import { AnimatePresence as AP, motion as m } from "framer-motion";
 import Avatar from "@/components/UI/Avatar";
 import { Description } from "@/components/UI/Typographic";
 import Button from "@/components/UI/Button";
 
+import EyeIcon from "@icons/visibility.svg?react";
 import DiceIcon from "@icons/dice.svg?react";
 import { getDuetByUserIds } from "@/functions";
 import { AppRoutes } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { useActions } from "@/hooks/useActions";
+import Loader from "@/components/UI/Loader";
 
 const FilmList: FC = () => {
 	const { pickedPartner } = useAppSelector((state) => state.global);
@@ -52,6 +54,8 @@ const FilmList: FC = () => {
 	const [isAnimationPlaying, setIsAnimationPlaying] = useState<boolean>(false);
 	const [triggerRead, { isLoading: readLoading }] = useLazyReadQuery();
 	const [updateData, { isLoading: updateLoading }] = useUpdateMutation();
+	const [clickedItem, setClickedItem] = useState<IFilm | null>(null);
+	const [contextMenuPos, setContextMenuPos] = useState<Pick<ContextMenuProps, "x" | "y">>({ x: 0, y: 0 });
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -191,68 +195,235 @@ const FilmList: FC = () => {
 		}
 	};
 
+	const handleContextMenu = (film: IFilm, position: Pick<ContextMenuProps, "x" | "y">) => {
+		setClickedItem(film);
+		setContextMenuPos(position);
+	};
+
 	return (
-		<Dialog showBackLink={!isAnimationPlaying} title="Ваш список фильмов">
-			<Flex column gap={20}>
-				<AP mode="wait" initial={false}>
-					{(isFetching || isAnimationPlaying) && (
-						<AnimationContainer {...transitions2}>
-							<div>?</div>
-							<div>?</div>
-							<div>?</div>
-						</AnimationContainer>
-					)}
-				</AP>
-				<PickedPartner userId={pickedPartner} />
-				<Flex column gap={12}>
-					<TabContainer gap={4} justifyContent="space-between">
-						{tabs.map((tab, index) => (
-							<Tab
-								onClick={() =>
-									setTabs((state) =>
-										state.map((tab, subIndex) => (subIndex === index ? { ...tab, isActive: true } : { ...tab, isActive: false }))
-									)
-								}
-								{...tab}
-								key={index}
-							/>
-						))}
-					</TabContainer>
+		<>
+			<Dialog showBackLink={!isAnimationPlaying} title="Ваш список фильмов">
+				<Loader isLoading={isFetching} dark absolute />
+				<Flex column gap={20}>
 					<AP mode="wait" initial={false}>
-						{tabs.find((tab) => tab.isActive)?.name === "Просмотрено" ? (
-							<m.div key="watched" {...transitions}>
-								<Track column gap={4}>
-									{watchedFilmList.length > 0 ? (
-										watchedFilmList.map((film) => <Item {...film} key={film.name} />)
-									) : (
-										<Description>В списке «{tabs.find((tab) => tab.isActive)?.name}» пока что нет фильмов.</Description>
-									)}
-								</Track>
-							</m.div>
-						) : (
-							<m.div key="onList" {...transitions}>
-								<Track column gap={4}>
-									{filmList.length > 0 ? (
-										filmList.map((film) => <Item {...film} key={film.name} />)
-									) : (
-										<Description>В списке «{tabs.find((tab) => tab.isActive)?.name}» пока что нет фильмов.</Description>
-									)}
-								</Track>
-							</m.div>
+						{isAnimationPlaying && (
+							<AnimationContainer {...transitions2}>
+								<div>?</div>
+								<div>?</div>
+								<div>?</div>
+							</AnimationContainer>
 						)}
 					</AP>
+					<PickedPartner userId={pickedPartner} />
+					<Flex column gap={12}>
+						<TabContainer gap={4} justifyContent="space-between">
+							{tabs.map((tab, index) => (
+								<Tab
+									onClick={() =>
+										setTabs((state) =>
+											state.map((tab, subIndex) =>
+												subIndex === index ? { ...tab, isActive: true } : { ...tab, isActive: false }
+											)
+										)
+									}
+									{...tab}
+									key={index}
+								/>
+							))}
+						</TabContainer>
+						<AP mode="wait" initial={false}>
+							{tabs.find((tab) => tab.isActive)?.name === "Просмотрено" ? (
+								<m.div key="watched" {...transitions}>
+									<Track column gap={4}>
+										{watchedFilmList.length > 0 ? (
+											watchedFilmList.map((film) => <Item {...film} key={film.name} />)
+										) : (
+											<Description>В списке «{tabs.find((tab) => tab.isActive)?.name}» пока что нет фильмов.</Description>
+										)}
+									</Track>
+								</m.div>
+							) : (
+								<m.div key="onList" {...transitions}>
+									<Track column gap={4}>
+										{filmList.length > 0 ? (
+											filmList.map((film) => (
+												<Item
+													isClicked={clickedItem?.id === film.id}
+													onContextMenu={handleContextMenu}
+													{...film}
+													key={film.name}
+												/>
+											))
+										) : (
+											<Description>В списке «{tabs.find((tab) => tab.isActive)?.name}» пока что нет фильмов.</Description>
+										)}
+										<AP mode="wait" initial={false}>
+											{clickedItem !== null && (
+												<>
+													<StyledContextContainer {...transitions2} />
+													<ContextMenu
+														setIsFetching={setIsFetching}
+														clickedFilm={clickedItem}
+														{...contextMenuPos}
+														{...transitions}
+														onClose={() => setClickedItem(null)}
+													/>
+												</>
+											)}
+										</AP>
+									</Track>
+								</m.div>
+							)}
+						</AP>
+					</Flex>
+					<Button onClick={getRandomFilm} disabled={filmList.length === 0} icon={DiceIcon}>
+						Выбрать фильм
+					</Button>
 				</Flex>
-				<Button onClick={getRandomFilm} disabled={filmList.length === 0} icon={DiceIcon}>
-					Выбрать фильм
-				</Button>
-			</Flex>
-		</Dialog>
+			</Dialog>
+		</>
 	);
 };
 
 export default FilmList;
 
 /* components */
+
+const StyledContextMenuItem = styled(Flex).attrs({ as: "button" })`
+	width: 150px;
+	border-radius: 8px;
+	font-size: 16px;
+	padding: 12px;
+	background-color: transparent;
+	color: rgba(255, 255, 255, 0.5);
+	cursor: pointer;
+	transition: 200ms;
+
+	> svg {
+		width: 1em;
+		height: 1em;
+
+		path {
+			transition: 200ms;
+			fill: rgba(255, 255, 255, 0.5);
+		}
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			color: white;
+			background-color: #303030;
+
+			svg path {
+				fill: white;
+			}
+		}
+	}
+
+	&:active {
+		color: white;
+		background-color: #303030;
+
+		svg path {
+			fill: white;
+		}
+	}
+`;
+
+const StyledContextContainer = styled(m.div)`
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 12;
+	background-color: rgba(0, 0, 0, 0.75);
+`;
+
+interface ContextMenuProps {
+	clickedFilm: IFilm;
+	onClose: () => void;
+	setIsFetching: (value: boolean) => void;
+	x: number;
+	y: number;
+}
+
+const shouldForwardProp = (prop: string) => !["x", "y"].includes(prop);
+
+const ContextMenu: FC<ContextMenuProps> = ({ onClose, setIsFetching, ...props }) => {
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	const { pickedPartner } = useAppSelector((state) => state.global);
+	const { user } = useAppSelector((state) => state.user);
+
+	const [triggerRead] = useLazyReadQuery();
+	const [updateData] = useUpdateMutation();
+
+	useEffect(() => {
+		const handleCloseDropdown = (event: MouseEvent) => {
+			const target = event.target as Node;
+
+			if (containerRef.current && !containerRef.current.contains(target)) {
+				onClose();
+			}
+		};
+
+		document.addEventListener("click", handleCloseDropdown);
+
+		return () => document.removeEventListener("click", handleCloseDropdown);
+	}, []);
+
+	const handleCheckViewed = async () => {
+		if (user && pickedPartner !== null) {
+			try {
+				setIsFetching(true);
+
+				const response = await triggerRead().unwrap();
+
+				const { duets } = response;
+
+				const currentDuet = getDuetByUserIds(duets, user.id, pickedPartner);
+
+				if (currentDuet) {
+					const newDuet: IDuet = {
+						...currentDuet,
+						watched: [...currentDuet.watched, { filmId: props.clickedFilm.id, owner: props.clickedFilm.owner }],
+						items: currentDuet.items.filter((film) => film.filmId !== props.clickedFilm.id),
+					};
+
+					const newDuets = duets.map((duet) => (duet.id === currentDuet.id ? newDuet : duet));
+
+					await updateData({ ...response, duets: newDuets });
+
+					setIsFetching(false);
+					onClose();
+				}
+			} catch (error) {
+				console.error("Ошибка при измении статуса фильма", error);
+			}
+		}
+	};
+
+	return (
+		<StyledContextMenu ref={containerRef} {...props}>
+			<StyledContextMenuItem onClick={handleCheckViewed} gap={8} alignItems="center">
+				<EyeIcon />
+				<span>Просмотрено</span>
+			</StyledContextMenuItem>
+		</StyledContextMenu>
+	);
+};
+
+const StyledContextMenu = styled(m.div).withConfig({ shouldForwardProp })<Pick<ContextMenuProps, "x" | "y">>`
+	position: fixed;
+	left: ${(props) => props.x}px;
+	top: ${(props) => props.y}px;
+	z-index: 14;
+	padding: 8px 4px;
+	border-radius: 12px;
+	border: 1px solid #303030;
+	background-color: var(--gray);
+`;
 
 const QuestSymbolAnimation = keyframes`
 	0%, 60%, 100% {
@@ -333,14 +504,36 @@ const Track = styled(Flex)`
 	}
 `;
 
-const Item: FC<IFilm> = ({ name, owner }) => {
+interface ItemProps extends IFilm {
+	isClicked?: boolean;
+	onContextMenu?: (film: IFilm, position: Pick<ContextMenuProps, "x" | "y">) => void;
+}
+
+const Item: FC<ItemProps> = ({ isClicked, id, name, owner, onContextMenu }) => {
 	const { users } = useAppSelector((state) => state.data);
 
 	const user = users.find((user) => user.id === owner);
 
+	const handleRightClick = (event: React.MouseEvent) => {
+		event.preventDefault();
+
+		if (onContextMenu) {
+			onContextMenu(
+				{ id, name, owner },
+				{ x: event.clientX + 160 > window.innerWidth ? event.clientX - 160 : event.clientX, y: event.clientY }
+			);
+		}
+	};
+
 	return (
 		user && (
-			<StyledItem justifyContent="space-between" gap={12} alignItems="center">
+			<StyledItem
+				isClicked={isClicked}
+				onContextMenu={handleRightClick}
+				justifyContent="space-between"
+				gap={12}
+				alignItems="center"
+			>
 				<span>{name}</span>
 				<Avatar size="small" colorId={user.color} symbol={user.name.charAt(0)} />
 			</StyledItem>
@@ -348,13 +541,30 @@ const Item: FC<IFilm> = ({ name, owner }) => {
 	);
 };
 
-const StyledItem = styled(Flex)`
+const StyledItem = styled(Flex).withConfig({ shouldForwardProp: (prop) => !["isClicked"].includes(prop) })<{
+	isClicked?: boolean;
+}>`
 	background-color: var(--black);
 	padding: 2px 2px 2px 16px;
 	border-radius: 22px;
 	font-size: 16px;
 	font-weight: 600;
 	color: white;
+	cursor: pointer;
+	transition: 200ms;
+
+	${(props) =>
+		props.isClicked &&
+		css`
+			position: relative;
+			z-index: 14;
+		`}
+
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			opacity: 0.65;
+		}
+	}
 
 	span {
 		white-space: nowrap;

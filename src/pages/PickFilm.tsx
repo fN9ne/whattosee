@@ -128,9 +128,17 @@ export default PickFilm;
 /* components */
 
 const Track = styled(Flex)`
-	padding: 2px 0 0 0;
+	padding: 2px 10px 0 0;
 	max-height: 350px;
 	overflow: auto;
+
+	&::-webkit-scrollbar {
+		width: 5px;
+
+		&-thumb {
+			background-color: #777;
+		}
+	}
 `;
 
 interface ItemProps extends IFilm {
@@ -172,6 +180,12 @@ const StyledItem = styled(Flex).withConfig({ shouldForwardProp })<StyledItemProp
 	position: relative;
 	background-color: rgba(22, 22, 22, 0.25);
 	color: rgba(255, 255, 255, 0.25);
+
+	span {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
 	> div {
 		opacity: 0.25;
