@@ -4,7 +4,7 @@ import Dialog from "@/components/UI/Dialog";
 import Tab from "@/components/UI/Tab";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { IDuet, IDuetFilm, IFilm, IUser, useLazyReadQuery, useUpdateMutation } from "@/services/api";
+import { IDuet, IDuetFilm, IFilm, useLazyReadQuery, useUpdateMutation } from "@/services/api";
 import { FC, useEffect, useRef, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 
@@ -36,7 +36,7 @@ const FilmList: FC = () => {
 		notification?: number;
 	}
 
-	const { setResult, setUser } = useActions();
+	const { setResult } = useActions();
 	const [filmList, setFilmList] = useState<IFilm[]>([]);
 	const [watchedFilmList, setWatchedFilmList] = useState<IFilm[]>([]);
 	const [currentDuet, setCurrentDuet] = useState<IDuet | null>(null);
@@ -52,15 +52,10 @@ const FilmList: FC = () => {
 	]);
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 	const [isAnimationPlaying, setIsAnimationPlaying] = useState<boolean>(false);
-	const [triggerRead, { isLoading: readLoading }] = useLazyReadQuery();
-	const [updateData, { isLoading: updateLoading }] = useUpdateMutation();
+	const [triggerRead] = useLazyReadQuery();
 	const [clickedItem, setClickedItem] = useState<IFilm | null>(null);
 	const [contextMenuPos, setContextMenuPos] = useState<Pick<ContextMenuProps, "x" | "y">>({ x: 0, y: 0 });
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		setIsFetching(readLoading || updateLoading);
-	}, [readLoading, updateLoading]);
 
 	useEffect(() => {
 		if (user && pickedPartner !== null && duets.length > 0) {
@@ -127,70 +122,23 @@ const FilmList: FC = () => {
 
 				const response = await triggerRead().unwrap();
 
-				const { duets, items, users } = response;
+				const { items, duets } = response;
 
 				const currentDuet = getDuetByUserIds(duets, user.id, pickedPartner);
 
 				if (currentDuet) {
-					/* duets */
-
 					const queuedFilms = currentDuet.items;
 
 					const resultedFilm = queuedFilms[Math.floor(Math.random() * queuedFilms.length)];
 
-					const newDuet: IDuet = {
-						...currentDuet,
-						items: currentDuet.items.filter((film) => film.filmId !== resultedFilm.filmId),
-						watched: [...currentDuet.watched, resultedFilm],
-					};
-					const newDuets = duets.map((duet) => (duet.id === currentDuet.id ? newDuet : duet));
+					setResult(items.find((film) => film.id === resultedFilm.filmId) || null);
 
-					/* users */
-
-					const newCurrentUser: IUser = {
-						...user,
-						latest: {
-							duets: [pickedPartner, ...user.latest.duets]
-								.slice(0, 2)
-								.filter((userId, index, array) => array.indexOf(userId) === index),
-							films: [{ ...resultedFilm, owner: pickedPartner }, ...user.latest.films].slice(0, 5),
-						},
-					};
-
-					const desiredPartner = users.find((user) => user.id === pickedPartner);
-
-					if (desiredPartner) {
-						const newPartner: IUser = {
-							...desiredPartner,
-							latest: {
-								duets: [user.id, ...desiredPartner.latest.duets]
-									.slice(0, 2)
-									.filter((userId, index, array) => array.indexOf(userId) === index),
-								films: [{ ...resultedFilm, owner: user.id }, ...desiredPartner.latest.films].slice(0, 5),
-							},
-						};
-
-						const newUsers = users.map((userItem) =>
-							userItem.id === user.id ? newCurrentUser : userItem.id === pickedPartner ? newPartner : userItem
-						);
-
-						setUser(newCurrentUser);
-
-						/* update data */
-
-						await updateData({ ...response, duets: newDuets, users: newUsers }).then(() => {
-							setResult(items.find((film) => film.id === resultedFilm.filmId) || null);
-
-							setTimeout(() => {
-								navigate(AppRoutes.Result);
-							}, 2500);
-						});
-					} else {
-						console.error("Ошибка при поиске партнёра.");
-					}
+					setTimeout(() => {
+						navigate(AppRoutes.Result);
+					}, 2500);
 				}
 			} catch (error) {
-				console.error("Ошибка при получении случайного фильма.", error);
+				console.error("Ошибка при выборе фильма", error);
 			}
 		}
 	};
@@ -236,10 +184,32 @@ const FilmList: FC = () => {
 								<m.div key="watched" {...transitions}>
 									<Track column gap={4}>
 										{watchedFilmList.length > 0 ? (
-											watchedFilmList.map((film) => <Item {...film} key={film.name} />)
+											watchedFilmList.map((film) => (
+												<Item
+													isClicked={clickedItem?.id === film.id}
+													onContextMenu={handleContextMenu}
+													{...film}
+													key={film.name}
+												/>
+											))
 										) : (
 											<Description>В списке «{tabs.find((tab) => tab.isActive)?.name}» пока что нет фильмов.</Description>
 										)}
+										<AP mode="wait" initial={false}>
+											{clickedItem !== null && (
+												<>
+													<StyledContextContainer {...transitions2} />
+													<ContextMenu
+														listType="watched"
+														setIsFetching={setIsFetching}
+														clickedFilm={clickedItem}
+														{...contextMenuPos}
+														{...transitions}
+														onClose={() => setClickedItem(null)}
+													/>
+												</>
+											)}
+										</AP>
 									</Track>
 								</m.div>
 							) : (
@@ -262,6 +232,7 @@ const FilmList: FC = () => {
 												<>
 													<StyledContextContainer {...transitions2} />
 													<ContextMenu
+														listType="queue"
 														setIsFetching={setIsFetching}
 														clickedFilm={clickedItem}
 														{...contextMenuPos}
@@ -341,6 +312,7 @@ const StyledContextContainer = styled(m.div)`
 `;
 
 interface ContextMenuProps {
+	listType: "queue" | "watched";
 	clickedFilm: IFilm;
 	onClose: () => void;
 	setIsFetching: (value: boolean) => void;
@@ -350,7 +322,7 @@ interface ContextMenuProps {
 
 const shouldForwardProp = (prop: string) => !["x", "y"].includes(prop);
 
-const ContextMenu: FC<ContextMenuProps> = ({ onClose, setIsFetching, ...props }) => {
+const ContextMenu: FC<ContextMenuProps> = ({ onClose, setIsFetching, listType, ...props }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	const { pickedPartner } = useAppSelector((state) => state.global);
@@ -385,11 +357,21 @@ const ContextMenu: FC<ContextMenuProps> = ({ onClose, setIsFetching, ...props })
 				const currentDuet = getDuetByUserIds(duets, user.id, pickedPartner);
 
 				if (currentDuet) {
-					const newDuet: IDuet = {
-						...currentDuet,
-						watched: [...currentDuet.watched, { filmId: props.clickedFilm.id, owner: props.clickedFilm.owner }],
-						items: currentDuet.items.filter((film) => film.filmId !== props.clickedFilm.id),
-					};
+					let newDuet: IDuet | null = null;
+
+					if (listType === "queue") {
+						newDuet = {
+							...currentDuet,
+							watched: [...currentDuet.watched, { filmId: props.clickedFilm.id, owner: props.clickedFilm.owner }],
+							items: currentDuet.items.filter((film) => film.filmId !== props.clickedFilm.id),
+						};
+					} else {
+						newDuet = {
+							...currentDuet,
+							watched: currentDuet.watched.filter((film) => film.filmId !== props.clickedFilm.id),
+							items: [...currentDuet.items, { filmId: props.clickedFilm.id, owner: props.clickedFilm.owner }],
+						};
+					}
 
 					const newDuets = duets.map((duet) => (duet.id === currentDuet.id ? newDuet : duet));
 
@@ -408,7 +390,7 @@ const ContextMenu: FC<ContextMenuProps> = ({ onClose, setIsFetching, ...props })
 		<StyledContextMenu ref={containerRef} {...props}>
 			<StyledContextMenuItem onClick={handleCheckViewed} gap={8} alignItems="center">
 				<EyeIcon />
-				<span>Просмотрено</span>
+				<span>{listType === "queue" ? "Просмотрено" : "В очередь"}</span>
 			</StyledContextMenuItem>
 		</StyledContextMenu>
 	);

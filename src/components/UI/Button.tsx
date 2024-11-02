@@ -67,6 +67,10 @@ const StyledButton = styled(Flex).attrs({ as: "button" }).withConfig({ shouldFor
 	background-color: ${(props) => (props.style === "primary" ? "var(--primary)" : "var(--black)")};
 	transition: 200ms;
 
+	svg path {
+		fill: white;
+	}
+	
 	${(props) =>
 		props.disabled &&
 		css`
